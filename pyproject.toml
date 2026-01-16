@@ -42,6 +42,10 @@ python_boilerplate = "python_boilerplate.cli:app"
 
 [tool.ruff]
 line-length = 120
+extend-exclude = [
+  "tests/",
+  "**/tests/**",
+]
 
 [tool.ruff.lint]
 select = [
@@ -55,3 +59,7 @@ select = [
 
 [tool.uv]
 package = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+ignore_errors = true
