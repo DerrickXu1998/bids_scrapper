@@ -1,4 +1,5 @@
 import logging
+import time
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -8,8 +9,32 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class selenium_driver:
-    def __init__(self):
-        self.chrome_driver = webdriver.Chrome()
+    def __init__(self, retry_attempts: int = 3):
+        self.retry_attempts = retry_attempts
+        self._initialize_driver()
+
+    def _initialize_driver(self):
+        """Initialize the Chrome driver with retry logic."""
+        for attempt in range(self.retry_attempts):
+            try:
+                options = webdriver.ChromeOptions()
+                # Disable sandbox for better parallel execution
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
+                # Disable GPU acceleration
+                options.add_argument("--disable-gpu")
+                options.add_argument("--incognito")
+                self.chrome_driver = webdriver.Chrome(options=options)
+
+                logging.info("ChromeDriver initialized successfully")
+                return
+            except Exception as e:
+                logging.debug("test-error", e)
+                logging.warning(f"Failed to initialize ChromeDriver (attempt {attempt + 1}/{self.retry_attempts}): {e}")
+                if attempt < self.retry_attempts - 1:
+                    time.sleep(1)  # Wait before retrying
+                else:
+                    raise RuntimeError("Failed to initialize ChromeDriver after all retry attempts")
 
     def get_url(self, url):
         self.chrome_driver.get(url)
@@ -52,3 +77,7 @@ class selenium_driver:
             raise TimeoutException(
                 f"(Element with class name '{class_name}' not found within {timeout} seconds using {by}='{selector}')"
             )
+
+    def quit(self):
+        """Close the Chrome driver."""
+        self.chrome_driver.quit()

@@ -5,7 +5,8 @@ import logging
 import typer
 from rich.console import Console
 
-from .driver import selenium_driver
+from .parallel_execute import ParallelExecutor
+from .utils import scrape_url
 
 app = typer.Typer()
 console = Console()
@@ -21,22 +22,20 @@ def main():
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     start = time.perf_counter()
+    # In your main() function:
+    start = time.perf_counter()
 
-    i = 0
-    valid = 0
-    for i in range(26081000, 26081100):
-        i += 1
-        driver = selenium_driver()
-        resp = driver.get_element_by_class_name_from_url(
-            f"https://www.ccgp.gov.cn/cggg/dfgg/zbgg/202601/t20260116_{i}.htm",
-            "vF_detail_content",
-            void="错误页面！中国政府采购网",
-        )
-        if resp:
-            # logging.info("Found valid page and content has:", resp.text)
-            valid += 1
+    # Create list of URLs
+    urls = [f"https://www.ccgp.gov.cn/cggg/dfgg/zbgg/202601/t20260116_{i}.htm" for i in range(26081801, 26081811)]
 
-    logging.info("Finished scraping for %s urls and found %s valid ones", i, valid)
+    # Execute in parallel with 3 workers (Chrome is resource-intensive)
+    with ParallelExecutor(max_workers=3) as executor:
+        results = executor.execute(scrape_url, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
+
+    # Count valid results
+    valid = sum(1 for result in results if result)
+
+    logging.info("Finished scraping for %s urls and found %s valid ones", len(urls), valid)
     elapsed = time.perf_counter() - start
     logging.info(f"{elapsed:.4f} seconds")
 
