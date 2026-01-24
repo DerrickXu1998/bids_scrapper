@@ -23,3 +23,17 @@ def scrape_url(url: str, class_name: str, void: str) -> str:
                 driver.quit()
             except Exception as e:
                 logging.warning(f"Error closing driver: {e}")
+
+
+def format_bids_url(url_template: str, index: int) -> str:
+    """Format bids URL template with current date."""
+    from datetime import datetime
+
+    now = datetime.now()
+    year_month = now.strftime("%Y%m")
+    year_month_date = now.strftime("%Y%m%d")
+    return url_template.format(
+        year_month=year_month,
+        year_month_date=year_month_date,
+        index="{index}",
+    )

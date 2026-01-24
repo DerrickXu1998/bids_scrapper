@@ -18,7 +18,7 @@ help:
 	@echo "  make install            Install the package and its dependencies"
 
 install:
-	uv pip install -r requirements.txt
+	uv run --${PYTHON} pip install --upgrade -r requirements.txt
 
 dev:
 	uv run python_boilerplate
@@ -39,7 +39,7 @@ format:
 	uv run ruff format $$(git diff --name-only --cached -- '*.py')
 
 type:
-	uv run ty check $$(git diff --name-only --cached -- '*.py')
+	uv run mypy .
 
 doc:
 	uvx --with mkdocstrings  --with mkdocs-material --with mkdocstrings-python --with mkdocs-include-markdown-plugin mkdocs serve
@@ -54,7 +54,7 @@ commit:
 	uv run pre-commit
 
 dockerbuild:
-	docker build -t modern-python-boilerplate:latest .
+	docker build
 
 dockerrun:
 	docker run --rm modern-python-boilerplate:latest
@@ -69,3 +69,6 @@ fix-all:
 	uv run ruff check --fix-only
 	uv run ruff format
 	uv run mypy .
+
+docker-shell:
+	docker compose run app bash

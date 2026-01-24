@@ -2,3 +2,6 @@ selenium
 requests
 mypy
 ruff
+typer
+pytest
+uv
