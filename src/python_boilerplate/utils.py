@@ -35,5 +35,5 @@ def format_bids_url(url_template: str, index: int) -> str:
     return url_template.format(
         year_month=year_month,
         year_month_date=year_month_date,
-        index="{index}",
+        index=index,
     )

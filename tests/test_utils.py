@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import datetime
+import logging
 
 from python_boilerplate.utils import format_bids_url
 
@@ -8,14 +9,14 @@ def test_format_bids_url():
     now = datetime.datetime.now()
     year_month = now.strftime("%Y%m")
     year_month_date = now.strftime("%Y%m%d")
-
-    result = format_bids_url(template)
+    index = 5
+    
+    result = format_bids_url(template, index=index)
 
     expected = template.format(
         year_month=year_month,
         year_month_date=year_month_date,
-        index="{index}",
+        index=index,
     )
 
     assert result == expected
-    assert "{index}" in result

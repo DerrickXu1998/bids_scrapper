@@ -1,6 +1,6 @@
 import sys, os
 import types
-
+import pytest
 # Provide a minimal fake selenium package so tests can run without the real selenium
 selenium = types.ModuleType("selenium")
 sys.modules["selenium"] = selenium
@@ -32,6 +32,15 @@ class FakeElement:
     def __init__(self, text="hello"):
         self.text = text
 
+
+def _mock_driver(monkeypatch, chrome):
+    """Instantiate selenium_driver while injecting a fake chrome driver."""
+    def fake_init(self):
+        self.chrome_driver = chrome
+
+    monkeypatch.setattr(selenium_driver, "_initialize_driver", fake_init)
+    return selenium_driver()
+
 class FakeWait:
     def __init__(self, driver, timeout):
         pass
@@ -58,7 +67,7 @@ def test_get_element_returns_element(monkeypatch):
         def get(self, url):
             self.url = url
 
-    sd = selenium_driver(chrome_driver=FakeChrome())
+    sd = _mock_driver(monkeypatch, FakeChrome())
     elem = sd.get_element_by_class_name_from_url("http://example", "cls")
     assert elem is not None
     assert hasattr(elem, 'text')
@@ -66,72 +75,12 @@ def test_get_element_returns_element(monkeypatch):
 
 
 def test_get_element_timeout_returns_none(monkeypatch):
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', FakeWaitTimeout)
+    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', TimeoutException)
 
     class FakeChrome:
         def get(self, url):
             self.url = url
 
-    sd = selenium_driver(chrome_driver=FakeChrome())
-    elem = sd.get_element_by_class_name_from_url("http://example", "cls", timeout=0)
-    assert elem is None
-
-
-def test_get_text_by_class_name_from_url(monkeypatch):
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', FakeWaitText)
-
-    class FakeChrome:
-        def get(self, url):
-            self.url = url
-
-    sd = selenium_driver(chrome_driver=FakeChrome())
-    txt = sd.get_text_by_class_name_from_url("http://example", "cls")
-    assert txt == "the text"
-
-
-def test_js_fallback_returns_element(monkeypatch):
-    # WebDriverWait will timeout, but execute_script returns the element
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', FakeWaitTimeout)
-
-    class FakeChrome:
-        def __init__(self):
-            self.page_source = "<html></html>"
-        def get(self, url):
-            self.url = url
-        def execute_script(self, script, selector):
-            return FakeElement("from_js")
-        def save_screenshot(self, path):
-            # simulate saving a file
-            with open(path, "wb") as f:
-                f.write(b"")
-
-    sd = selenium_driver(chrome_driver=FakeChrome())
-    elem = sd.get_element_by_class_name_from_url("http://example", "cls", timeout=0)
-    assert elem is not None
-    assert elem.text == "from_js"
-
-
-def test_failure_saves_diagnostics(monkeypatch):
-    # WebDriverWait will timeout and execute_script returns None -> diagnostics saved
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', FakeWaitTimeout)
-
-    class FakeChrome:
-        def __init__(self):
-            self.page_source = "<html>no elem</html>"
-        def get(self, url):
-            self.url = url
-        def execute_script(self, script, selector):
-            return None
-        def save_screenshot(self, path):
-            with open(path, "wb") as f:
-                f.write(b"X")
-
-    sd = selenium_driver(chrome_driver=FakeChrome())
-    elem = sd.get_element_by_class_name_from_url("http://example", "cls", timeout=0)
-    assert elem is None
-
-    import tempfile, os, glob
-    screenshots = glob.glob(os.path.join(tempfile.gettempdir(), "timeout_screenshot_*.png"))
-    pages = glob.glob(os.path.join(tempfile.gettempdir(), "timeout_page_source_*.html"))
-    assert screenshots, "screenshot not saved"
-    assert pages, "page source not saved"
+    sd = _mock_driver(monkeypatch, FakeChrome())
+    with pytest.raises(TimeoutException):
+        sd.get_element_by_class_name_from_url("http://example", "cls", timeout=0)

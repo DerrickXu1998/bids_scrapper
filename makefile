@@ -27,7 +27,7 @@ prod:
 	uv run modern_python_boilerplate
 
 test:
-	uv run pytest tests/
+	uv run pytest -s tests/
 
 cov:
 	uv run pytest --cov=src/modern_python_boilerplate tests/ --cov-report=term-missing

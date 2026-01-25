@@ -29,7 +29,6 @@ class selenium_driver:
                 logging.info("ChromeDriver initialized successfully")
                 return
             except Exception as e:
-                logging.debug("test-error", e)
                 logging.warning(f"Failed to initialize ChromeDriver (attempt {attempt + 1}/{self.retry_attempts}): {e}")
                 if attempt < self.retry_attempts - 1:
                     time.sleep(1)  # Wait before retrying
