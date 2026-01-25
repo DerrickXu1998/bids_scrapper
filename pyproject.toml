@@ -22,10 +22,22 @@ requires-python = ">= 3.14"
 test = [
     "coverage",  # testing
     "pytest",  # testing
+    "pytest-cov",  # pytest coverage plugin
     "ruff",  # linting
     "ty", # checking types
     "ipdb", # debugging
 ]
+
+[dependency-groups]
+test = [
+    "coverage",  # testing
+    "pytest",  # testing
+    "pytest-cov",  # pytest coverage plugin
+    "ruff",  # linting
+    "ty", # checking types
+    "ipdb", # debugging
+]
+[tool.uv.workspace]  # Must be present, but can be empty.
 
 [project.urls]
 bugs = "https://github.com/DerrickXu1998/python_boilerplate/issues"

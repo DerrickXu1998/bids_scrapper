@@ -30,7 +30,8 @@ test:
 	uv run pytest -s tests/
 
 cov:
-	uv run pytest --cov=src/modern_python_boilerplate tests/ --cov-report=term-missing
+	uv sync --group test
+	uv run pytest --cov=src/python_boilerplate tests/ --cov-report=term-missing
 
 check:
 	uv run ruff check $$(git diff --name-only --cached -- '*.py')
@@ -50,14 +51,8 @@ build:
 publish:
 	uv publish
 
-commit:
-	uv run pre-commit
-
 dockerbuild:
 	docker build
-
-dockerrun:
-	docker run --rm modern-python-boilerplate:latest
 
 allci:
 	$(MAKE) check
