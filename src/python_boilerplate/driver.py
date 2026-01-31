@@ -1,11 +1,35 @@
 import logging
+import os
 import time
+from pathlib import Path
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+
+def is_running_in_docker() -> bool:
+    """Check if the code is running inside a Docker container."""
+    # Check for .dockerenv file
+    if Path("/.dockerenv").exists():
+        return True
+    # Check cgroup for docker
+    try:
+        with open("/proc/1/cgroup") as f:
+            return "docker" in f.read()
+    except (FileNotFoundError, PermissionError):
+        return False
+
+
+def get_selenium_url() -> str:
+    """Get the Selenium remote URL based on environment."""
+    # Explicit env var takes priority
+    if url := os.getenv("SELENIUM_REMOTE_URL"):
+        return url
+    # Auto-detect: use host.docker.internal inside Docker, localhost otherwise
+    return "http://host.docker.internal:4444"
 
 
 class selenium_driver:
@@ -24,8 +48,12 @@ class selenium_driver:
                 # Disable GPU acceleration
                 options.add_argument("--disable-gpu")
                 options.add_argument("--incognito")
-                self.chrome_driver = webdriver.Chrome(options=options)
-
+                remote_url = get_selenium_url()
+                if is_running_in_docker():
+                    logging.info(f"Connecting to Selenium at {remote_url}")
+                    self.chrome_driver = webdriver.Remote(command_executor=remote_url, options=options)
+                else:
+                    self.chrome_driver = webdriver.Chrome(options=options)
                 logging.info("ChromeDriver initialized successfully")
                 return
             except Exception as e:

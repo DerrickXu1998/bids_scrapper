@@ -1,14 +1,23 @@
 """Console script for python_boilerplate."""
 
-import argparse
 import logging
 import time
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import typer
+from pydantic import BaseModel
 from rich.console import Console
 
+from .constants import dfgg_url_collection, zygg_url_collection
 from .parallel_execute import ParallelExecutor
 from .utils import scrape_url
+
+
+class ExecuteConfig(BaseModel):
+    starting_index: int
+    ending_index: int
+
 
 app = typer.Typer()
 console = Console()
@@ -32,6 +41,41 @@ def main():
 
     # Execute in parallel with 3 workers (Chrome is resource-intensive)
     with ParallelExecutor(max_workers=20) as executor:
+        results = executor.execute(scrape_url, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
+
+    # Count valid results
+    valid = sum(1 for result in results if result)
+
+    logging.info("Finished scraping for %s urls and found %s valid ones", len(urls), valid)
+    elapsed = time.perf_counter() - start
+    logging.info(f"{elapsed:.4f} seconds")
+
+
+@app.command()
+def execute(
+    starting_index: int = typer.Option(...),
+    ending_index: int = typer.Option(...),
+):
+    """main entry point for the CLI."""
+    cfg = ExecuteConfig(starting_index=starting_index, ending_index=ending_index)
+    _setup_logger(None, cfg.dict())
+
+    start = time.perf_counter()
+    urls = []
+    today = datetime.now(ZoneInfo("Asia/Shanghai"))
+    # year_month = today.strftime("%Y%m")
+    # year_month_date = today.strftime("%Y%m%d")
+    year_month = 202601
+    year_month_date = 20260118
+    # Create list of URLs
+    for index in range(cfg.starting_index, cfg.ending_index + 1):
+        for url in zygg_url_collection:
+            urls.append(url.format(year_month=year_month, year_month_date=year_month_date, index=index))
+        for url in dfgg_url_collection:
+            urls.append(url.format(year_month=year_month, year_month_date=year_month_date, index=index))
+    logging.info("Total urls to scrape: %s", len(urls))
+
+    with ParallelExecutor(max_workers=5) as executor:
         results = executor.execute(scrape_url, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
 
     # Count valid results
@@ -74,7 +118,7 @@ def main():
 #     return runtime_args
 
 
-def _setup_logger(args: argparse.Namespace, kwargs: dict[str, str]) -> None:
+def _setup_logger(*_args, **_kwargs) -> None:
     """Setup logger based on runtime arguments."""
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

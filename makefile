@@ -1,4 +1,5 @@
 .PHONY: help
+PYTHON ?= /usr/local/bin/python3.14
 
 help:
 	@echo "Usage:"
@@ -18,10 +19,12 @@ help:
 	@echo "  make install            Install the package and its dependencies"
 
 install:
-	uv run --${PYTHON} pip install --upgrade -r requirements.txt
+	rm -rf .venv
+	uv venv --python $(PYTHON)
+	uv pip install --upgrade --requirement requirements.txt
 
 dev:
-	uv run python_boilerplate
+	uv run  python_boilerplate execute --starting-index 26087598 --ending-index 26087811
 
 prod:
 	uv run modern_python_boilerplate
@@ -66,4 +69,6 @@ fix-all:
 	uv run mypy .
 
 docker-shell:
+	@docker rm -f $$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest) 2>/dev/null || true
+	docker run --platform linux/amd64 -d -p 4444:4444 -p 7900:7900 --shm-size="2g" -e SE_NODE_MAX_SESSIONS=20 -e SE_NODE_OVERRIDE_MAX_SESSIONS=true selenium/standalone-chrome:latest
 	docker compose run app bash

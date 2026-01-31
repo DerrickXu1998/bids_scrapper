@@ -2,7 +2,7 @@
 import datetime
 import logging
 
-from python_boilerplate.utils import format_bids_url
+from bids_scraper.utils import format_bids_url
 
 def test_format_bids_url():
     template = "https://example.com/{year_month}/t{year_month_date}_{index}.htm"

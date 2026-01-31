@@ -5,3 +5,4 @@ ruff
 typer
 pytest
 uv
+pydantic
