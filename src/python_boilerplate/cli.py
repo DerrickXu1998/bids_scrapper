@@ -9,9 +9,11 @@ import typer
 from pydantic import BaseModel
 from rich.console import Console
 
+from python_boilerplate.workflow.bid_scraper import BidScraper
+
 from .constants import dfgg_url_collection, zygg_url_collection
 from .parallel_execute import ParallelExecutor
-from .utils import scrape_url
+from .utils import scrape_url_text
 
 
 class ExecuteConfig(BaseModel):
@@ -41,12 +43,27 @@ def main():
 
     # Execute in parallel with 3 workers (Chrome is resource-intensive)
     with ParallelExecutor(max_workers=20) as executor:
-        results = executor.execute(scrape_url, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
+        results = executor.execute(scrape_url_text, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
 
     # Count valid results
     valid = sum(1 for result in results if result)
 
     logging.info("Finished scraping for %s urls and found %s valid ones", len(urls), valid)
+    elapsed = time.perf_counter() - start
+    logging.info(f"{elapsed:.4f} seconds")
+
+
+@app.command()
+def execute_anchor():
+    """main entry point for the CLI."""
+    _setup_logger(None, None)
+
+    start = time.perf_counter()
+    scraper = BidScraper()
+    results = scraper.anchor_index()
+
+    # Count valid results
+    logging.info("Anchor urls found: %s", results)
     elapsed = time.perf_counter() - start
     logging.info(f"{elapsed:.4f} seconds")
 
@@ -76,7 +93,7 @@ def execute(
     logging.info("Total urls to scrape: %s", len(urls))
 
     with ParallelExecutor(max_workers=5) as executor:
-        results = executor.execute(scrape_url, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
+        results = executor.execute(scrape_url_text, urls, "vF_detail_content_container", "错误页面！中国政府采购网")
 
     # Count valid results
     valid = sum(1 for result in results if result)

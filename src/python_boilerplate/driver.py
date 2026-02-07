@@ -19,7 +19,7 @@ def is_running_in_docker() -> bool:
     try:
         with open("/proc/1/cgroup") as f:
             return "docker" in f.read()
-    except (FileNotFoundError, PermissionError):
+    except FileNotFoundError, PermissionError:
         return False
 
 

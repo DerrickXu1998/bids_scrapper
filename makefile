@@ -26,6 +26,8 @@ install:
 dev:
 	uv run  python_boilerplate execute --starting-index 26087598 --ending-index 26087811
 
+dev-anchor:
+	uv run  python_boilerplate execute-anchor
 prod:
 	uv run modern_python_boilerplate
 
