@@ -8,7 +8,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/DerrickXu1998/python_boilerplate/issues.
+Report bugs at https://github.com/DerrickXu1998/bids_scrapper/issues.
 
 If you are reporting a bug, please include:
 
@@ -30,7 +30,7 @@ bids_scraper could always use more documentation, whether as part of the officia
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at https://github.com/DerrickXu1998/python_boilerplate/issues.
+The best way to send feedback is to file an issue at https://github.com/DerrickXu1998/bids_scrapper/issues.
 
 If you are proposing a feature:
 
@@ -40,20 +40,20 @@ If you are proposing a feature:
 
 ## Get Started!
 
-Ready to contribute? Here's how to set up `python_boilerplate` for local development.
+Ready to contribute? Here's how to set up `bids_scrapper` for local development.
 
-1. Fork the `python_boilerplate` repo on GitHub.
+1. Fork the `bids_scrapper` repo on GitHub.
 2. Clone your fork locally:
 
    ```sh
-   git clone git@github.com:your_name_here/python_boilerplate.git
+   git clone git@github.com:your_name_here/bids_scrapper.git
    ```
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
 
    ```sh
-   mkvirtualenv python_boilerplate
-   cd python_boilerplate/
+   mkvirtualenv bids_scrapper
+   cd bids_scrapper/
    python setup.py develop
    ```
 
@@ -99,7 +99,7 @@ Before you submit a pull request, check that it meets these guidelines:
 To run a subset of tests:
 
 ```sh
-pytest tests.test_python_boilerplate
+pytest tests.test_bids_scrapper
 ```
 
 ## Deploying

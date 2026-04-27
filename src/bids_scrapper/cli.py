@@ -1,4 +1,4 @@
-"""Console script for python_boilerplate."""
+"""Console script for bids_scrapper."""
 
 import logging
 import time
@@ -9,7 +9,7 @@ import typer
 from pydantic import BaseModel
 from rich.console import Console
 
-from python_boilerplate.workflow.bid_scraper import BidScraper
+from bids_scrapper.workflow.bid_scraper import BidScraper
 
 from .constants import dfgg_url_collection, zygg_url_collection
 from .parallel_execute import ParallelExecutor
@@ -80,10 +80,10 @@ def execute(
     start = time.perf_counter()
     urls = []
     today = datetime.now(ZoneInfo("Asia/Shanghai"))
-    # year_month = today.strftime("%Y%m")
-    # year_month_date = today.strftime("%Y%m%d")
-    year_month = 202601
-    year_month_date = 20260118
+    year_month = today.strftime("%Y%m")
+    year_month_date = today.strftime("%Y%m%d")
+    # year_month = 202601
+    # year_month_date = 20260118
     # Create list of URLs
     for index in range(cfg.starting_index, cfg.ending_index + 1):
         for url in zygg_url_collection:

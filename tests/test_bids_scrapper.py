@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import pytest
 
-"""Tests for `python_boilerplate` package."""
+"""Tests for `bids_scrapper` package."""
 
-# from python_boilerplate import python_boilerplate
+# from bids_scrapper import bids_scrapper
 
 
 @pytest.fixture

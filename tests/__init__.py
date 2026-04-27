@@ -1,1 +1,1 @@
-"""Unit test package for python_boilerplate."""
+"""Unit test package for bids_scrapper."""

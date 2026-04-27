@@ -25,7 +25,7 @@ sys.modules["selenium"].webdriver = types.SimpleNamespace(Chrome=lambda: None)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
-from python_boilerplate.driver import selenium_driver
+from bids_scrapper.driver import selenium_driver
 from selenium.common.exceptions import TimeoutException
 
 class FakeElement:
@@ -61,7 +61,7 @@ class FakeWaitText:
 
 
 def test_get_element_returns_element(monkeypatch):
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', FakeWait)
+    monkeypatch.setattr('bids_scrapper.driver.WebDriverWait', FakeWait)
 
     class FakeChrome:
         def get(self, url):
@@ -75,7 +75,7 @@ def test_get_element_returns_element(monkeypatch):
 
 
 def test_get_element_timeout_returns_none(monkeypatch):
-    monkeypatch.setattr('python_boilerplate.driver.WebDriverWait', TimeoutException)
+    monkeypatch.setattr('bids_scrapper.driver.WebDriverWait', FakeWaitTimeout)
 
     class FakeChrome:
         def get(self, url):

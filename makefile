@@ -24,19 +24,20 @@ install:
 	uv pip install --upgrade --requirement requirements.txt
 
 dev:
-	uv run  python_boilerplate execute --starting-index 26087598 --ending-index 26087811
+	uv run  bids_scrapper execute --starting-index 26087596 --ending-index 26088596
 
 dev-anchor:
-	uv run  python_boilerplate execute-anchor
+	uv run  bids_scrapper execute-anchor
+	
 prod:
-	uv run modern_python_boilerplate
+	uv run modern_bids_scrapper
 
 test:
 	uv run pytest -s tests/
 
 cov:
 	uv sync --group test
-	uv run pytest --cov=src/python_boilerplate tests/ --cov-report=term-missing
+	uv run pytest --cov=src/bids_scrapper tests/ --cov-report=term-missing
 
 check:
 	uv run ruff check $$(git diff --name-only --cached -- '*.py')

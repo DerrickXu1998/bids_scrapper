@@ -1,4 +1,4 @@
-"""Console script for python_boilerplate."""
+"""Console script for bids_scrapper."""
 
 import logging
 from datetime import datetime
@@ -49,7 +49,8 @@ class BidScraper:
         anchor_target_attribute = "href"
 
         # We would expect mutiple matching element, but scrape_url_text return the first one found, which is the first
-        # so it is good enough. Might be problematic if the website structure changes and the first one is no longer the anchor element, but we can fix it when that happens.
+        # so it is good enough. Might be problematic if the website structure changes
+        # and the first one is no longer the anchor element, but we can fix it when that happens.
         output = []
         for url in achor_url_candidate:
             logging.info("Scraping anchor url candidate: %s", url)

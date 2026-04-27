@@ -19,7 +19,7 @@ def is_running_in_docker() -> bool:
     try:
         with open("/proc/1/cgroup") as f:
             return "docker" in f.read()
-    except FileNotFoundError, PermissionError:
+    except (FileNotFoundError, PermissionError):
         return False
 
 
@@ -61,7 +61,7 @@ class selenium_driver:
                 if attempt < self.retry_attempts - 1:
                     time.sleep(1)  # Wait before retrying
                 else:
-                    raise RuntimeError("Failed to initialize ChromeDriver after all retry attempts")
+                    raise RuntimeError("Failed to initialize ChromeDriver after all retry attempts") from e
 
     def get_url(self, url):
         self.chrome_driver.get(url)
@@ -100,10 +100,10 @@ class selenium_driver:
             elem = WebDriverWait(self.chrome_driver, timeout).until(EC.visibility_of_element_located((by, selector)))
             logging.info("Found element using %s and selector %s", by, selector)
             return elem
-        except TimeoutException:
+        except TimeoutException as e:
             raise TimeoutException(
                 f"(Element with class name '{class_name}' not found within {timeout} seconds using {by}='{selector}')"
-            )
+            ) from e
 
     def quit(self):
         """Close the Chrome driver."""

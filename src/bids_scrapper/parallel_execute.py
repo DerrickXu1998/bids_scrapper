@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Parallel executor module for running functions concurrently using multithreading."""
 
 import logging
