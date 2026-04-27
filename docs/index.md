@@ -1,4 +1,4 @@
-# Welcome to bids_scraper's documentation!
+# Welcome to bids_scrapper's documentation!
 
 ## Contents
 

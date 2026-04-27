@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy in the source code
 COPY src ./src
 EXPOSE 8080
+ENV PYTHONPATH=/usr/local/scaper/python-boilerplate/src
 
 # Setup an app user so the container doesn't run as the root user
 RUN useradd app
@@ -21,4 +22,4 @@ USER app
 
 ENV UV_CACHE_DIR=/tmp/uv-cache
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "-m", "bids_scrapper"]

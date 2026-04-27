@@ -30,14 +30,13 @@ dev-anchor:
 	uv run  bids_scrapper execute-anchor
 	
 prod:
-	uv run modern_bids_scrapper
+	uv run bids_scrapper
 
 test:
-	uv run pytest -s tests/
+	uv run --python 3.14 --extra test pytest -s tests/
 
 cov:
-	uv sync --group test
-	uv run pytest --cov=src/bids_scrapper tests/ --cov-report=term-missing
+	uv run --python 3.14 --extra test pytest --cov=src/bids_scrapper tests/ --cov-report=term-missing
 
 check:
 	uv run ruff check $$(git diff --name-only --cached -- '*.py')

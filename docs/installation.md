@@ -2,21 +2,21 @@
 
 ## Stable release
 
-To install bids_scraper, run this command in your terminal:
+To install bids_scrapper, run this command in your terminal:
 
 ```sh
-uv add python-boilerplate
+uv add bids-scrapper
 ```
 
 Or if you prefer to use `pip`:
 
 ```sh
-pip install python-boilerplate
+pip install bids-scrapper
 ```
 
 ## From source
 
-The source files for bids_scraper can be downloaded from the [Github repo](https://github.com/DerrickXu1998/bids_scrapper).
+The source files for bids_scrapper can be downloaded from the [Github repo](https://github.com/DerrickXu1998/bids_scrapper).
 
 You can either clone the public repository:
 
