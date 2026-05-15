@@ -9,9 +9,34 @@ bids_scrapper helps scrape bid announcements.
 * Free software: MIT License
 * Documentation: https://bids-scrapper.readthedocs.io.
 
+## Project structure (canonical)
+
+Use this repository map as the source of truth for where changes should go:
+
+- `src/bids_scrapper/`: application and scraping implementation
+- `tests/`: test suites
+- `docs/`: user and contributor-facing docs
+- `.github/`: CI workflows and repository automation/config
+- `makefile`: canonical quality workflow commands
+
+## Quality workflow (canonical commands)
+
+Run quality checks through Make targets:
+
+- `make check` — lint
+- `make format` — format
+- `make type` — mypy type check
+- `make test` — test execution
+- `make cov` — test coverage report
+- `make allci` — full local CI gate
+
+For contributor setup and PR workflow details, see `CONTRIBUTING.md`.
+
 ## Features
 
-* TODO
+- Web scraping framework for bid announcements
+- Selenium-based browser automation
+- Python 3.14 runtime baseline
 
 ## Credits
 

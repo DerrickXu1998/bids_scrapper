@@ -49,12 +49,11 @@ Ready to contribute? Here's how to set up `bids_scrapper` for local development.
    git clone git@github.com:your_name_here/bids_scrapper.git
    ```
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
+3. Install your local copy into a local Python environment:
 
    ```sh
-   mkvirtualenv bids_scrapper
    cd bids_scrapper/
-   python setup.py develop
+   make install
    ```
 
 4. Create a branch for local development:
@@ -65,16 +64,19 @@ Ready to contribute? Here's how to set up `bids_scrapper` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox:
+5. When you're done making changes, run the canonical quality commands from the Makefile:
 
    ```sh
-   make lint
+   make check
+   make format
+   make type
    make test
-   # Or
-   make test-all
+   make cov
+   # Or run the complete quality gate
+   make allci
    ```
 
-   To get flake8 and tox, just pip install them into your virtualenv.
+   These are the required contributor commands used by this project.
 
 6. Commit your changes and push your branch to GitHub:
 
@@ -92,14 +94,19 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.md.
-3. The pull request should work for Python 3.12 and 3.13. Tests run in GitHub Actions on every pull request to the main branch, make sure that the tests pass for all supported Python versions.
+3. The pull request should work for the supported Python versions configured in CI.
+4. Structure your changes in canonical locations:
+   - `src/bids_scrapper/` for source code
+   - `tests/` for tests
+   - `docs/` for documentation updates
+   - `.github/` for CI/workflow automation
 
 ## Tips
 
 To run a subset of tests:
 
 ```sh
-pytest tests.test_bids_scrapper
+uv run --python 3.14 --extra test pytest -s tests/test_bids_scrapper.py
 ```
 
 ## Deploying

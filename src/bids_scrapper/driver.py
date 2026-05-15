@@ -29,7 +29,7 @@ def get_selenium_url() -> str:
     if url := os.getenv("SELENIUM_REMOTE_URL"):
         return url
     # Auto-detect: use host.docker.internal inside Docker, localhost otherwise
-    return "http://host.docker.internal:4444"
+    return "http://host.docker.internal:4444" if is_running_in_docker() else "http://localhost:4444"
 
 
 class selenium_driver:

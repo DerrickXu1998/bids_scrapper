@@ -25,7 +25,7 @@ sys.modules["selenium"].webdriver = types.SimpleNamespace(Chrome=lambda: None)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
-from bids_scrapper.driver import selenium_driver
+from bids_scrapper.driver import get_selenium_url, selenium_driver
 from selenium.common.exceptions import TimeoutException
 
 class FakeElement:
@@ -84,3 +84,20 @@ def test_get_element_timeout_returns_none(monkeypatch):
     sd = _mock_driver(monkeypatch, FakeChrome())
     with pytest.raises(TimeoutException):
         sd.get_element_by_class_name_from_url("http://example", "cls", timeout=0)
+
+
+@pytest.mark.parametrize(
+    ("env_url", "running_in_docker", "expected"),
+    [
+        ("http://custom:4444", False, "http://custom:4444"),
+        (None, True, "http://host.docker.internal:4444"),
+        (None, False, "http://localhost:4444"),
+    ],
+)
+def test_get_selenium_url_resolution(monkeypatch, env_url, running_in_docker, expected):
+    if env_url is None:
+        monkeypatch.delenv("SELENIUM_REMOTE_URL", raising=False)
+    else:
+        monkeypatch.setenv("SELENIUM_REMOTE_URL", env_url)
+    monkeypatch.setattr("bids_scrapper.driver.is_running_in_docker", lambda: running_in_docker)
+    assert get_selenium_url() == expected

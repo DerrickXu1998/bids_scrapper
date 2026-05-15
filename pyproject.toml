@@ -27,6 +27,7 @@ test = [
     "pytest",  # testing
     "pytest-cov",  # pytest coverage plugin
     "ruff",  # linting
+    "mypy", # type checking
     "ty", # checking types
     "ipdb", # debugging
 ]
@@ -37,6 +38,7 @@ test = [
     "pytest",  # testing
     "pytest-cov",  # pytest coverage plugin
     "ruff",  # linting
+  "mypy", # type checking
     "ty", # checking types
     "ipdb", # debugging
 ]

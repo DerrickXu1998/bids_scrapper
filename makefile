@@ -1,15 +1,16 @@
-.PHONY: help
+.PHONY: help type type-check
 PYTHON ?= /usr/local/bin/python3.14
 
 help:
 	@echo "Usage:"
 	@echo "  make dev                Run the package with developer settings"
-	@echo "  make prod               Run the pacakge with production settings"
+	@echo "  make prod               Run the package with production settings"
 	@echo "  make test               CI: Run tests"
 	@echo "  make cov                CI: Run test and calculate coverage"
 	@echo "  make check              CI: Lint the code"
 	@echo "  make format             CI: Format the code"
-	@echo "  make type               CI: Check typing"
+	@echo "  make type               CI: Check typing (mypy)"
+	@echo "  make type-check         Alias of make type"
 	@echo "  make doc                Run local documentation server"
 	@echo "  make build              Build the package wheel before publishing to Pypi"
 	@echo "  make publish            Publish package to Pypi"
@@ -19,8 +20,6 @@ help:
 	@echo "  make install            Install the package and its dependencies"
 
 install:
-	rm -rf .venv
-	uv venv --python $(PYTHON)
 	uv pip install --upgrade --requirement requirements.txt
 
 dev:
@@ -44,8 +43,12 @@ check:
 format:
 	uv run ruff format $$(git diff --name-only --cached -- '*.py')
 
+
 type:
 	uv run mypy .
+
+
+type-check: type
 
 doc:
 	uvx --with mkdocstrings  --with mkdocs-material --with mkdocstrings-python --with mkdocs-include-markdown-plugin mkdocs serve
@@ -73,4 +76,4 @@ fix-all:
 docker-shell:
 	@docker rm -f $$(docker ps -q --filter ancestor=selenium/standalone-chrome:latest) 2>/dev/null || true
 	docker run --platform linux/amd64 -d -p 4444:4444 -p 7900:7900 --shm-size="2g" -e SE_NODE_MAX_SESSIONS=20 -e SE_NODE_OVERRIDE_MAX_SESSIONS=true selenium/standalone-chrome:latest
-	docker compose run app bash
+	docker compose run --build --workdir /app app bash

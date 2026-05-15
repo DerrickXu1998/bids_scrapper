@@ -9,4 +9,4 @@ services:
       - PYTHONUNBUFFERED=1
       - SELENIUM_REMOTE_URL=http://host.docker.internal:4444
     volumes:
-      - .:/usr/local/scaper/python-boilerplate
+      - .:/app
